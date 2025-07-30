@@ -1,5 +1,6 @@
 FROM python:3.11-slim
 
+WORKDIR /
 
 # Install cron
 RUN apt-get update && apt-get install -y cron && apt-get clean
