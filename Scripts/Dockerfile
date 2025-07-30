@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Install crontab
-RUN crontab /app/crontab.txt
+RUN crontab /crontab.txt
 
 # Start cron in foreground
 CMD ["cron", "-f"]
