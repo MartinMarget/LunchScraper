@@ -193,6 +193,18 @@ def load_menu(restaurant):
             "name": restaurant["name"],
             "items": [f"(Error fetching menu: {e})"]
         }
+    
+def generate_poll_html(question, options):
+    options.append("Nakupak")
+    html = f"<form method='post'>\n"
+    html += f"<h3>{question}</h3>\n"
+    for i, option in enumerate(options):
+        html += f"<label><input type='radio' name='poll' value='{option}' /> {option}</label><br>\n"
+    html += "<button type='submit'>Vote</button>\n"
+    html += "</form>"
+    return html
+# Example usage:
+# print(generate_poll_html("What's for lunch?", ["Pizza", "Salad", "Burger"]))
 
 def render_html(menu_data):
     env = Environment(loader=FileSystemLoader(script_dir))
@@ -203,10 +215,13 @@ def render_html(menu_data):
         for item in restaurant['items']:
             print(item['name'])
             print(item['price'])
+    
+    poll_html=generate_poll_html("Where do we go for lunch?", menus)
 
     output = template.render(
         date=datetime.today().strftime("%A, %d.%m.%Y"),
-        menus=menu_data
+        menus=menu_data,
+        poll=poll_html
     )
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
