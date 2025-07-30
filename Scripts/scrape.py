@@ -8,19 +8,19 @@ import html
 import codecs
 import shutil
 
-# Output folder
 
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 print('current dir is:', os.getcwd())
 print('script_dir is:', script_dir)
 
+# Output directory for HTML files
 OUTPUT_DIR = 'output'
 
-
+# Template file
 TEMPLATE_FILE = 'template.html'
 
-# Restaurant URLs (you'll replace these)
+# Restaurant table, name of restarant, URL to menu, and parser function name
 RESTAURANTS = [
     {
         "name": "Trifot",
@@ -44,6 +44,7 @@ RESTAURANTS = [
     }
 ]
 
+# Function to parse Trifot menu
 def parse_menu_alfa(html):
     soup = BeautifulSoup(html, 'html.parser')
     today = datetime.today().strftime('%A')  # e.g. "Monday"
@@ -75,6 +76,7 @@ def parse_menu_alfa(html):
     
     return output
 
+# Function to parse Aspira menu
 def parse_menu_beta(html):
     today = datetime.today().strftime('%A')  # e.g. "Monday"
     if today == 'Monday':
@@ -113,6 +115,7 @@ def parse_menu_beta(html):
     
     return cleaned_items
 
+# Function to parse Olive menu
 def parse_menu_gama(html):
     start_index = html.find('id="dennimenu"')
     end_index = html.find('recenze-link">sem<')
@@ -138,7 +141,7 @@ def parse_menu_gama(html):
 
     return grouped
 
-
+# Function to parse Theta Pub
 def parse_menu_theta(html):
     today = datetime.today().strftime('%A')  # e.g. "Monday"
     if today == 'Monday':
@@ -171,6 +174,7 @@ def parse_menu_theta(html):
     
     return cleaned_items
 
+
 def fix_encoding(text):
     try:
         # Misdecoded text: try re-encoding as bytes then decoding properly
@@ -178,6 +182,8 @@ def fix_encoding(text):
     except UnicodeDecodeError:
         return unidecode(text)  # Fallback
 
+
+# Function to load menu from a restaurant URL and parse it
 def load_menu(restaurant):
     try:
         resp = requests.get(restaurant['url'], timeout=10)
@@ -194,6 +200,8 @@ def load_menu(restaurant):
             "items": [f"(Error fetching menu: {e})"]
         }
 
+
+# Function to render HTML using Jinja2   
 def render_html(menu_data):
     env = Environment(loader=FileSystemLoader(script_dir))
     template = env.get_template(TEMPLATE_FILE)
@@ -213,6 +221,9 @@ def render_html(menu_data):
     with open(os.path.join(OUTPUT_DIR, "index.html"), "w", encoding='utf-8') as f:
         f.write(output)
 
+
+
+# Main function to load menus and render HTML
 def main():
     print("Loading menus...")
     menus = [load_menu(r) for r in RESTAURANTS]
