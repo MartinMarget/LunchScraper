@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install cron
+RUN apt-get update && apt-get install -y cron && apt-get clean
+
+# Install Python deps
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy files
+COPY . .
+
+# Make script executable
+RUN chmod +x /app/run.sh
+
+# Install crontab
+RUN crontab /app/crontab.txt
+
+# Start cron in foreground
+CMD ["cron", "-f"]
+

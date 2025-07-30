@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Daily menu</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .content {
+      flex: 4;
+      padding: 2rem;
+    }
+
+    .sidebar {
+      flex: 1;
+      background-color: #1a1a1a;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #333;
+    }
+
+    .sidebar img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+    }
+
+    h1 {
+      color: #ffa500;
+      border-bottom: 2px solid #ffa500;
+      padding-bottom: 0.2em;
+    }
+
+    .restaurant {
+      margin-bottom: 2em;
+      padding: 1em;
+      border: 1px solid #333;
+      background-color: #1a1a1a;
+      border-radius: 8px;
+    }
+
+    ul {
+      list-style-type: "🍽 ";
+      padding-left: 1.5em;
+    }
+
+    table {
+      width: 100%;
+      font-family: sans-serif;
+    }
+
+    td {
+      padding: 0.3em 0;
+    }
+
+    td:last-child {
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="content">
+ <h1>Menu for {{ date }}</h1>
+
+    {% for restaurant in menus %}
+        <div class="restaurant">
+            <h2>{{ restaurant.name }}</h2>
+            <table style="width: 100%; font-family: sans-serif;">
+                
+                {% for item in restaurant['items'] %}
+                    <tr>
+                        <td>{{ item['name'] }}</td>
+                        <td style="text-align: right;">{{ item['price'] }}</td>
+                    </tr>
+                {% endfor %}
+                
+            </table>
+        </div>
+            
+    {% endfor %}
+    </div>
+
+    <div class="sidebar">
+      <img src="./ThisImage.png">
+    </div>
+  </div>
+</body>
+</html>
+
