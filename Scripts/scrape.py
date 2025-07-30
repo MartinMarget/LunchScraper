@@ -210,15 +210,13 @@ def render_html(menu_data):
     )
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    with open(os.path.join(OUTPUT_DIR, "today_menu.html"), "w", encoding='utf-8') as f:
+    with open(os.path.join(OUTPUT_DIR, "index.html"), "w", encoding='utf-8') as f:
         f.write(output)
 
 def main():
     print("Loading menus...")
     menus = [load_menu(r) for r in RESTAURANTS]
     render_html(menus)
-    os.rename('/app/output/today_menu.html','/app/output/index.html')
-    shutil.move('/app/output/index.html','/output/index.html')
     print("✓ Menu summary generated: output/index.html")
 
 if __name__ == "__main__":
