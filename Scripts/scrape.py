@@ -195,16 +195,18 @@ def load_menu(restaurant):
         }
     
 def generate_poll_html(question, options):
-    options.append("Nakupak")
-    html = f"<form method='post'>\n"
+    opt = [item['name'] for item in options]
+    opt.append("Nakupak")
+
+    html = f"<form class='sticky-poll' method='post'>\n"
     html += f"<h3>{question}</h3>\n"
-    for i, option in enumerate(options):
-        html += f"<label><input type='radio' name='poll' value='{option}' /> {option}</label><br>\n"
-    html += "<button type='submit'>Vote</button>\n"
+    
+    for option in opt:
+        # Each button will submit the form with its value as the chosen poll option
+        html += f"<button type='submit' name='poll' value='{option}'>{option}</button>\n" 
+        
     html += "</form>"
     return html
-# Example usage:
-# print(generate_poll_html("What's for lunch?", ["Pizza", "Salad", "Burger"]))
 
 def render_html(menu_data):
     env = Environment(loader=FileSystemLoader(script_dir))

@@ -31,16 +31,67 @@
       background-color: #1a1a1a;
       padding: 2rem;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column; 
+      align-items: flex-start;
+      /* justify-content: center; */
       border-left: 1px solid #333;
+    }
+
+    .sticky-poll {
+      position: sticky;
+      top: 0; /* This makes it stick to the top of its scrolling container */
+      z-index: 10; /* Ensures it stays above other content when sticking */
+      background-color: #1a1a1a; /* Add background to cover content when sticky, match sidebar */
+      padding: 1rem; /* Add some padding to the sticky element */
+      width: 100%; /* Make it span the full width of the sidebar */
+      box-sizing: border-box; /* Include padding in the width calculation */
     }
 
     .sidebar img {
       max-width: 100%;
       max-height: 100%;
       border-radius: 8px;
+      margin-top: 2rem;
     }
+
+    .sticky-poll button[name='poll'] {
+    /* Basic Button Reset */
+    appearance: none; /* Standardize button appearance across browsers */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    outline: none; /* Remove outline on focus */
+
+    /* Sizing and Spacing */
+    display: block; /* Ensures each button takes its own line */
+    width: 100%; /* *** CRITICAL FOR UNIFORM WIDTH *** - buttons fill the poll container's width */
+    padding: 0.9rem 1.2rem; /* Vertical and horizontal padding */
+    margin-bottom: 0.8rem; /* Space between each button */
+
+    /* Modern Aesthetics */
+    background-color: #007bff; /* Primary button color (a nice blue) */
+    color: white; /* White text for contrast */
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* Modern font stack */
+    font-size: 1.1rem; /* Slightly larger font size */
+    font-weight: 600; /* Semi-bold text */
+    text-align: center; /* Center text within each button */
+    border-radius: 10px; /* More pronounced rounded corners */
+    cursor: pointer; /* Indicates interactivity */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Deeper, softer shadow */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+  }
+
+  .sticky-poll button[name='poll']:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-3px); /* Lifts button slightly on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+  }
+
+  .sticky-poll button[name='poll']:active {
+    background-color: #004085; /* Even darker blue when clicked */
+    transform: translateY(0); /* "Presses" button down */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Flatter shadow when active */
+  }
 
     h1 {
       color: #ffa500;
@@ -100,10 +151,7 @@
 
     <div class="sidebar">
       <h1>Voting</h1>
-      <!-- Insert the poll HTML content here -->
-      <div>
-          {{ poll }}
-      </div>
+      {{ poll }}
       <img src="./ThisImage.png">
     </div>
   </div>
