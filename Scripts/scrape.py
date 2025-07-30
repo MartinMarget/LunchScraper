@@ -64,7 +64,7 @@ def parse_menu_alfa(html):
     # Final output list of dicts
     output = []
 
-    for item in menu_items:
+    for item in menu_items[:-9]:  # Exclude last 9 items
         match = pattern.search(item.strip())
         if match:
             name = match.group(1).strip().rstrip(',')  # trim spaces and trailing commas
