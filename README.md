@@ -14,7 +14,7 @@ Folder structure:
         scrape.py - main scraping script
         template.html - combination of html and py file which is used as template page
 docker-compose.yml - option for docker 
-git-pull.sh - this script is run each morning in 2 a clock and updates repository on server before the build of docker (after dev is done this shall be switched off or some high value)
+docker_load_and_restart.sh - this script is run each morning in 2 a clock and updates repository on server before the build of docker (after dev is done this shall be switched off or some high value)
 README.md -  this file? probably
 
 
