@@ -1,1 +1,1 @@
-* * * * *  /usr/local/bin/python /scrape.py  >> /cron.log 2>&1
+0 7 * * *  /usr/local/bin/python /scrape.py  >> /cron.log 2>&1
