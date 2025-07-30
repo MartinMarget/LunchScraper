@@ -1,7 +1,6 @@
 services:
-  scraper_Martin:
-    build: ./scraper
+  scraper_martin:
+    build: ./Scripts
     volumes:
-      - ./output:/output     # local ./output will map to container /output
-    entrypoint: ["bash", "/run.sh"]
+      - ./Output:/output     # local ./output will map to container /output
     restart: "unless-stopped"
