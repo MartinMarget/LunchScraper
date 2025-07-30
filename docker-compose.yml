@@ -2,5 +2,5 @@ services:
   scraper_martin:
     build: ./Scripts
     volumes:
-      - ./Output:/output     # local ./output will map to container /output
+      - ./Output:/root/output     # local ./output will map to container /output
     restart: "unless-stopped"
