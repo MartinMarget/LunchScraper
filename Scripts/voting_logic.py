@@ -1,11 +1,34 @@
-# voting_logic.py (or VL.py)
+# voting_logic.py
 import json
 import os
 import threading
 import requests
+from flask import request # This is a new import required for get_client_ip
 
-VOTES_FILE = "votes.json"
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+VOTES_FILE = os.path.join(PROJECT_ROOT, "Output", "votes.json")
 LOCK = threading.Lock()
+
+def get_client_ip():
+    """
+    Safely retrieves the client's IP address, accounting for proxies.
+    Checks for 'X-Forwarded-For' and 'X-Real-IP' headers first.
+    """
+    if request.headers.get('X-Forwarded-For'):
+        # The header can contain a list of IPs, the first one is the client's
+        client_ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
+        print(f"DEBUG: Retrieved client IP from X-Forwarded-For: {client_ip}")
+        return client_ip
+    if request.headers.get('X-Real-IP'):
+        client_ip = request.headers.get('X-Real-IP').strip()
+        print(f"DEBUG: Retrieved client IP from X-Real-IP: {client_ip}")
+        return client_ip
+    
+    # Fallback to the default remote_addr if no proxy headers are found
+    fallback_ip = request.remote_addr
+    print(f"DEBUG: Falling back to remote_addr: {fallback_ip}")
+    return fallback_ip
+
 
 def check_ip_location(ip):
     """

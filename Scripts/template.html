@@ -1,264 +1,223 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <title>Daily menu</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <title>Daily menu</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #eee;
-      margin: 0;
-      padding: 0;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #eee;
+            margin: 0;
+            padding: 0;
+        }
 
-    .layout {
-      display: flex;
-      min-height: 100vh;
-    }
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
 
-    .content {
-      flex: 4;
-      padding: 2rem;
-    }
+        .content {
+            flex: 4;
+            padding: 2rem;
+        }
 
-    .sidebar {
-      flex: 1;
-      background-color: #1a1a1a;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column; 
-      align-items: flex-start;
-      /* justify-content: center; */
-      border-left: 1px solid #333;
-    }
+        .sidebar {
+            flex: 1;
+            background-color: #1a1a1a;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            /* justify-content: center; */
+            border-left: 1px solid #333;
+        }
 
-    .sticky-poll {
-      position: sticky;
-      top: 0; /* This makes it stick to the top of its scrolling container */
-      z-index: 10; /* Ensures it stays above other content when sticking */
-      background-color: #1a1a1a; /* Add background to cover content when sticky, match sidebar */
-      padding: 1rem; /* Add some padding to the sticky element */
-      width: 100%; /* Make it span the full width of the sidebar */
-      box-sizing: border-box; /* Include padding in the width calculation */
-    }
+        .sticky-poll {
+            position: sticky;
+            top: 0; /* This makes it stick to the top of its scrolling container */
+            z-index: 10; /* Ensures it stays above other content when sticking */
+            background-color: #1a1a1a; /* Add background to cover content when sticky, match sidebar */
+            padding: 1rem; /* Add some padding to the sticky element */
+            width: 100%; /* Make it span the full width of the sidebar */
+            box-sizing: border-box; /* Include padding in the width calculation */
+        }
 
-    .sidebar img {
-      max-width: 100%;
-      max-height: 100%;
-      border-radius: 8px;
-      margin-top: 2rem;
-    }
+        .sidebar img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
 
-    .sticky-poll button[name='poll'] {
-    /* Basic Button Reset */
-    appearance: none; /* Standardize button appearance across browsers */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    border: none;
-    outline: none; /* Remove outline on focus */
+        .sticky-poll button[name='poll'] {
+            /* Basic Button Reset */
+            appearance: none; /* Standardize button appearance across browsers */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            border: none;
+            outline: none; /* Remove outline on focus */
 
-    /* Sizing and Spacing */
-    display: block; /* Ensures each button takes its own line */
-    width: 100%; /* *** CRITICAL FOR UNIFORM WIDTH *** - buttons fill the poll container's width */
-    padding: 0.9rem 1.2rem; /* Vertical and horizontal padding */
-    margin-bottom: 0.8rem; /* Space between each button */
+            /* Sizing and Spacing */
+            display: block; /* Ensures each button takes its own line */
+            width: 100%; /* *** CRITICAL FOR UNIFORM WIDTH *** - buttons fill the poll container's width */
+            padding: 0.9rem 1.2rem; /* Vertical and horizontal padding */
+            margin-bottom: 0.8rem; /* Space between each button */
 
-    /* Modern Aesthetics */
-    background-color: #007bff; /* Primary button color (a nice blue) */
-    color: white; /* White text for contrast */
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* Modern font stack */
-    font-size: 1.1rem; /* Slightly larger font size */
-    font-weight: 600; /* Semi-bold text */
-    text-align: center; /* Center text within each button */
-    border-radius: 10px; /* More pronounced rounded corners */
-    cursor: pointer; /* Indicates interactivity */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Deeper, softer shadow */
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Smooth hover effects */
-  }
+            /* Modern Aesthetics */
+            background-color: #007bff; /* Primary button color (a nice blue) */
+            color: white; /* White text for contrast */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* Modern font stack */
+            font-size: 1.1rem; /* Slightly larger font size */
+            font-weight: 600; /* Semi-bold text */
+            text-align: center; /* Center text within each button */
+            border-radius: 10px; /* More pronounced rounded corners */
+            cursor: pointer; /* Indicates interactivity */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Deeper, softer shadow */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+        }
 
-  .sticky-poll button[name='poll']:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    transform: translateY(-3px); /* Lifts button slightly on hover */
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
-  }
+        .sticky-poll button[name='poll']:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: translateY(-3px); /* Lifts button slightly on hover */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+        }
 
-  .sticky-poll button[name='poll']:active {
-    background-color: #004085; /* Even darker blue when clicked */
-    transform: translateY(0); /* "Presses" button down */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Flatter shadow when active */
-  }
+        .sticky-poll button[name='poll']:active {
+            background-color: #004085; /* Even darker blue when clicked */
+            transform: translateY(0); /* "Presses" button down */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Flatter shadow when active */
+        }
 
-    h1 {
-      color: #ffa500;
-      border-bottom: 2px solid #ffa500;
-      padding-bottom: 0.2em;
-    }
+        h1 {
+            color: #ffa500;
+            border-bottom: 2px solid #ffa500;
+            padding-bottom: 0.2em;
+        }
 
-    .restaurant {
-      margin-bottom: 2em;
-      padding: 1em;
-      border: 1px solid #333;
-      background-color: #1a1a1a;
-      border-radius: 8px;
-    }
+        .restaurant {
+            margin-bottom: 2em;
+            padding: 1em;
+            border: 1px solid #333;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+        }
 
-    ul {
-      list-style-type: "🍽 ";
-      padding-left: 1.5em;
-    }
+        ul {
+            list-style-type: "🍽 ";
+            padding-left: 1.5em;
+        }
 
-    table {
-      width: 100%;
-      font-family: sans-serif;
-    }
+        table {
+            width: 100%;
+            font-family: sans-serif;
+        }
 
-    td {
-      padding: 0.3em 0;
-    }
+        td {
+            padding: 0.3em 0;
+        }
 
-    td:last-child {
-      text-align: right;
-    }
+        td:last-child {
+            text-align: right;
+        }
 
-    /* New styles for vote results */
-    .vote-results {
-        margin-top: 2rem;
-        padding-top: 1rem;
-        border-top: 1px solid #333;
-        width: 100%; /* Ensure it takes full width of sidebar */
-    }
+        /* New styles for vote results */
+        .vote-results {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #333;
+            width: 100%; /* Ensure it takes full width of sidebar */
+        }
 
-    .vote-results h2 {
-        color: #ffa500;
-        margin-bottom: 1rem;
-        font-size: 1.5rem;
-    }
+        .vote-results h2 {
+            color: #ffa500;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
 
-    .vote-results ul {
-        list-style-type: none; /* No default bullet points */
-        padding: 0;
-    }
+        .vote-results ul {
+            list-style-type: none; /* No default bullet points */
+            padding: 0;
+        }
 
-    .vote-results li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.5rem 0;
-        border-bottom: 1px dashed #555;
-    }
+        .vote-results li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #555;
+        }
 
-    .vote-results li:last-child {
-        border-bottom: none;
-    }
+        .vote-results li:last-child {
+            border-bottom: none;
+        }
 
-    .vote-results .option-name {
-        font-weight: bold;
-        color: #eee;
-    }
+        .vote-results .option-name {
+            font-weight: bold;
+            color: #eee;
+        }
 
-    .vote-results .vote-count {
-        background-color: #007bff;
-        color: white;
-        padding: 0.3rem 0.7rem;
-        border-radius: 5px;
-        font-weight: bold;
-        min-width: 30px; /* Ensure consistent width for counts */
-        text-align: center;
-    }
-  </style>
+        .vote-results .vote-count {
+            background-color: #007bff;
+            color: white;
+            padding: 0.3rem 0.7rem;
+            border-radius: 5px;
+            font-weight: bold;
+            min-width: 30px; /* Ensure consistent width for counts */
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <div class="layout">
-    <div class="content">
-      <h1>Menu for {{ date }}</h1>
-
-      {% for restaurant in menus %}
-        <div class="restaurant">
-          <h2>{{ restaurant.name }}</h2>
-          <table style="width: 100%; font-family: sans-serif;">
-            {% for item in restaurant['items'] %}
-              <tr>
-                <td>{{ item['name'] }}</td>
-                <td style="text-align: right;">{{ item['price'] }}</td>
-              </tr>
+    <div class="layout">
+        <div class="content">
+            <h1>Menu for {{ date }}</h1>
+            {% for restaurant in menus %}
+                <div class="restaurant">
+                    <h2>{{ restaurant.name }}</h2>
+                    <table style="width: 100%; font-family: sans-serif;">
+                        {% for item in restaurant['items'] %}
+                            <tr>
+                                <td>{{ item['name'] }}</td>
+                                <td style="text-align: right;">{{ item['price'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             {% endfor %}
-          </table>
         </div>
-      {% endfor %}
+        <div class="sidebar">
+            <h1>Voting</h1>
+            {% if message %}
+                <p style="color: #ffa500; margin-top: 1rem;">{{ message }}</p>
+            {% endif %}
+
+            <!-- Only show the poll if there is no message (i.e., before a vote is submitted) -->
+            {% if not message %}
+                {{ poll|safe }}
+            {% else %}
+            <!-- This section will only display if 'message' is present (i.e., after a vote is submitted) -->
+                <div class="vote-results">
+                    <h2>Current Votes</h2>
+                    <ul>
+                        {% for option, count in vote_counts.items() %}
+                            <li>
+                                <span class="option-name">{{ option }}</span>
+                                <span class="vote-count">{{ count }}</span>
+                            </li>
+                        {% else %}
+                            <li>No votes cast yet.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <img src="/Output/ThisImage.png" alt="Image" />
+        </div>
     </div>
-
-    <div class="sidebar">
-      <h1>Voting</h1>
-      <script>
-        window.onload = function() {
-          const showWarning = {{ show_warning | default(false) | tojson }};
-          if (showWarning) {
-            const messageBox = document.createElement('div');
-            messageBox.style.cssText = `
-              position: fixed;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              background-color: #333;
-              color: white;
-              padding: 20px;
-              border-radius: 8px;
-              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-              z-index: 1000;
-              text-align: center;
-              font-size: 1.1rem;
-            `;
-            messageBox.innerHTML = `
-              <p>Are you really in the office? Voting blocked!</p>
-              <button onclick="this.parentNode.remove()" style="
-                background-color: #007bff;
-                color: white;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 5px;
-                cursor: pointer;
-                margin-top: 10px;
-              ">OK</button>
-            `;
-            document.body.appendChild(messageBox);
-          }
-        };
-      </script>
-
-      {# Only show the poll if there is no message (i.e., before a vote is submitted) #}
-      {% if not message %}
-          {{ poll|safe }}
-      {% endif %}
-
-      {% if message %}
-        <p style="color: #ffa500; margin-top: 1rem;">{{ message }}</p>
-      {% endif %}
-
-      {# This section will only display if 'message' is present (i.e., after a vote is submitted) #}
-      {% if message %} 
-          <div class="vote-results">
-              <h2>Current Votes</h2>
-              <ul>
-                  {# Iterate over vote_counts, which is a dictionary of {option_name: count} #}
-                  {% for option, count in vote_counts.items() %}
-                      <li>
-                          <span class="option-name">{{ option }}</span>
-                          <span class="vote-count">{{ count }}</span>
-                      </li>
-                  {% else %}
-                      <li>No votes cast yet.</li>
-                  {% endfor %}
-              </ul>
-          </div>
-      {% endif %}
-
-      <img src="./ThisImage.png" alt="Image" />
-    </div>
-  </div>
 </body>
 </html>
