@@ -175,28 +175,159 @@
 <body>
   <div class="layout">
     <div class="content">
-      <h1>Menu for {{ date }}</h1>
+      <h1>Menu for Thursday, 31.07.2025</h1>
 
-      {% for restaurant in menus %}
+      
         <div class="restaurant">
-          <h2>{{ restaurant.name }}</h2>
+          <h2>Trifot</h2>
           <table style="width: 100%; font-family: sans-serif;">
-            {% for item in restaurant['items'] %}
+            
               <tr>
-                <td>{{ item['name'] }}</td>
-                <td style="text-align: right;">{{ item['price'] }}</td>
+                <td>Hovězí vývar s nudlemi a zeleninou</td>
+                <td style="text-align: right;">40 Kč</td>
               </tr>
-            {% endfor %}
+            
+              <tr>
+                <td>Rozlítaný španělský ptáček, jasmínová rýže</td>
+                <td style="text-align: right;">220 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Obalované rybí file, bramborová kaše</td>
+                <td style="text-align: right;">210 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Mexická zapečená quesadilla s krůtím masem, ricottou a čedarem</td>
+                <td style="text-align: right;">220 Kč</td>
+              </tr>
+            
           </table>
         </div>
-      {% endfor %}
+      
+        <div class="restaurant">
+          <h2>Aspira</h2>
+          <table style="width: 100%; font-family: sans-serif;">
+            
+              <tr>
+                <td>Kachní kaldón</td>
+                <td style="text-align: right;">47 / 67Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Zeleninová minestrone</td>
+                <td style="text-align: right;">47 / 67Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Šoulet s vařeným vejcem, cibulkou a okurkou</td>
+                <td style="text-align: right;">35Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Nudličky z palců vepřových panenek s pepřovou omáčkou</td>
+                <td style="text-align: right;">164Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Kuřecí řízek v cornflakes se sweet chilli omáčkou</td>
+                <td style="text-align: right;">159Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Krůtí kebab s estragónem a černými olivami na salátku s tzatziky</td>
+                <td style="text-align: right;">199Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Gnocchi quattro formaggi s čerstvou rukolou, parmazán</td>
+                <td style="text-align: right;">179Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Jasmínová rýže</td>
+                <td style="text-align: right;">25Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Šťouchané brambory</td>
+                <td style="text-align: right;">25Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Pita chléb</td>
+                <td style="text-align: right;">25Kč</td>
+              </tr>
+            
+          </table>
+        </div>
+      
+        <div class="restaurant">
+          <h2>Olive</h2>
+          <table style="width: 100%; font-family: sans-serif;">
+            
+              <tr>
+                <td>Boršč se zakysanou smetanou</td>
+                <td style="text-align: right;">39 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Mix Dall (tři druhy čočky, červené fazole), basmati rýže</td>
+                <td style="text-align: right;">155 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Musaka (hovězí mleté maso, brambory, lilek), tzatziki (400g)</td>
+                <td style="text-align: right;">159 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Chicken Kari (kuřecí kousky 150g v kari koření) podávané s basmati rýží</td>
+                <td style="text-align: right;">165 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Hovězí Taccos 3ks (hov.mletá, cheddar,jalapeňos), podávané s nachos</td>
+                <td style="text-align: right;">179 Kč</td>
+              </tr>
+            
+          </table>
+        </div>
+      
+        <div class="restaurant">
+          <h2>Pub</h2>
+          <table style="width: 100%; font-family: sans-serif;">
+            
+              <tr>
+                <td>Houbový krém se smetanou a krutony (A1,3,7)</td>
+                <td style="text-align: right;">55 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Vepřový špíz se slaninou, cibulí, cuketou a paprikou, s pečenými bramborami grenaille se slaninou a pepřovou omáčkou (A1,7)</td>
+                <td style="text-align: right;">219 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Kuřecí quesadilla s jalapeño papričkami, červenou cibulí, cheddarem, paprikou, pikantní rajčatovou salsou a koriandrem s kukuřičnými nachos (A1,3,7)</td>
+                <td style="text-align: right;">199 Kč</td>
+              </tr>
+            
+              <tr>
+                <td>Záhorácký závitek se šťouchanými bramborami a vídeňskou cibulkou (A1,7)</td>
+                <td style="text-align: right;">189 Kč</td>
+              </tr>
+            
+          </table>
+        </div>
+      
     </div>
 
     <div class="sidebar">
       <h1>Voting</h1>
       <script>
         window.onload = function() {
-          const showWarning = {{ show_warning | default(false) | tojson }};
+          const showWarning = false;
           if (showWarning) {
             const messageBox = document.createElement('div');
             messageBox.style.cssText = `
@@ -230,32 +361,22 @@
         };
       </script>
 
-      {# Only show the poll if there is no message (i.e., before a vote is submitted) #}
-      {% if not message %}
-          {{ poll|safe }}
-      {% endif %}
+      
+      
+          <form class='sticky-poll' method='post' action='/vote'>
+<h3>Where do we go for lunch?</h3>
+<button type='submit' name='poll' value='Trifot'>Trifot</button>
+<button type='submit' name='poll' value='Aspira'>Aspira</button>
+<button type='submit' name='poll' value='Olive'>Olive</button>
+<button type='submit' name='poll' value='Pub'>Pub</button>
+<button type='submit' name='poll' value='Nakupak'>Nakupak</button>
+</form>
+      
 
-      {% if message %}
-        <p style="color: #ffa500; margin-top: 1rem;">{{ message }}</p>
-      {% endif %}
+      
 
-      {# This section will only display if 'message' is present (i.e., after a vote is submitted) #}
-      {% if message %} 
-          <div class="vote-results">
-              <h2>Current Votes</h2>
-              <ul>
-                  {# Iterate over vote_counts, which is a dictionary of {option_name: count} #}
-                  {% for option, count in vote_counts.items() %}
-                      <li>
-                          <span class="option-name">{{ option }}</span>
-                          <span class="vote-count">{{ count }}</span>
-                      </li>
-                  {% else %}
-                      <li>No votes cast yet.</li>
-                  {% endfor %}
-              </ul>
-          </div>
-      {% endif %}
+      
+      
 
       <img src="./ThisImage.png" alt="Image" />
     </div>
