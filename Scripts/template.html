@@ -129,32 +129,42 @@
 <body>
   <div class="layout">
     <div class="content">
- <h1>Menu for {{ date }}</h1>
+      <h1>Menu for {{ date }}</h1>
 
-    {% for restaurant in menus %}
+      {% for restaurant in menus %}
         <div class="restaurant">
-            <h2>{{ restaurant.name }}</h2>
-            <table style="width: 100%; font-family: sans-serif;">
-                
-                {% for item in restaurant['items'] %}
-                    <tr>
-                        <td>{{ item['name'] }}</td>
-                        <td style="text-align: right;">{{ item['price'] }}</td>
-                    </tr>
-                {% endfor %}
-                
-            </table>
+          <h2>{{ restaurant.name }}</h2>
+          <table style="width: 100%; font-family: sans-serif;">
+            {% for item in restaurant['items'] %}
+              <tr>
+                <td>{{ item['name'] }}</td>
+                <td style="text-align: right;">{{ item['price'] }}</td>
+              </tr>
+            {% endfor %}
+          </table>
         </div>
-            
-    {% endfor %}
+      {% endfor %}
     </div>
 
     <div class="sidebar">
       <h1>Voting</h1>
-      {{ poll }}
-      <img src="./ThisImage.png">
+      <script>
+        window.onload = function() {
+          const showWarning = {{ show_warning | tojson }};
+          if (showWarning) {
+            alert("Are you really in the office? Voting blocked!");
+          }
+        };
+      </script>
+
+      {{ poll|safe }}
+
+      {% if message %}
+        <p style="color: #ffa500; margin-top: 1rem;">{{ message }}</p>
+      {% endif %}
+
+      <img src="./ThisImage.png" alt="Image" />
     </div>
   </div>
 </body>
 </html>
-
