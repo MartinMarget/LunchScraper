@@ -1,33 +1,59 @@
-# LunchScraper
-To scrape menu of restaurants and create WebPage
+# LunchScraper  
 
-    
-- Folder structure: 
-        - Output - Additional files needed to run the pages (can contain css, images and others), do not commit any generated html files,note that all files in this folder will e exposed to webpage docker -> files will be online
-            ThisImage.png - stupid image of PE guy coding
-        - Scripts - scripts? probably
-            crontab.txt - crontab command used at start of docker (note that time of docker is winter cambridge time..)
-            DockerFile - build commands for docker
-            requirements.txt - all libraries needed (file is used during build of docker) 
-            run.sh - control script
-            scrape.py - main scraping script
-            template.html - combination of html and py file which is used as template page
-        docker-compose.yml - option for docker 
-        docker_load_and_restart.sh - this script is run each morning in 2 a clock and updates repository on server before the build of docker (after dev is done this shall be switched off or some high value)
-        README.md -  this file? probably
+To scrape menus of restaurants and create a webpage.  
 
+---
 
+## 📂 Folder Structure  
 
-only i can push mo main branch, please create branches  and merge requests.
+- **Output**  
+  - Additional files needed to run the pages (can contain CSS, images, etc.).  
+  - Do **not** commit any generated HTML files.  
+  - Note: all files in this folder will be exposed to the webpage Docker → files will be online.  
+  - Example:  
+    - `ThisImage.png` – stupid image of PE guy coding  
 
-nete that these scripts will not be used only by PE, but also by my wife :) so make it as general as possible
+- **Scripts**  
+  - Scripts for scraping and running the project.  
+  - Contents:  
+    - `crontab.txt` – crontab command used at start of Docker (note: Docker time = winter Cambridge time).  
+    - `DockerFile` – build commands for Docker.  
+    - `requirements.txt` – all libraries needed (used during Docker build).  
+    - `run.sh` – control script.  
+    - `scrape.py` – main scraping script.  
+    - `template.html` – combination of HTML and Python template page.  
 
-How it works: 
-each morning 7 a clock cambridge winter time script scrape.py is run, index.html is generated as result, this folder is also source folder for web docker pe.margetaj.cz
+- `docker-compose.yml` – option for Docker setup.  
+- `docker_load_and_restart.sh` – script run each morning at 2 a.m. to update repository on server before Docker build.  
+  - (After dev is done this should be switched off or set to a higher value.)  
+- `README.md` – this file.  
 
-to run it locally:
-1) clone repository
-2) full git folder should be as environment
-3) download requirements
-4) run scrape.py
+---
 
+## 🔑 Git Workflow  
+
+- Only **you** can push to the `main` branch.  
+- Others should create **branches** and submit **merge requests**.  
+
+---
+
+## 👥 Notes  
+
+- Scripts will not be used only by PE, but also by your wife 🙂 → make them as general as possible.  
+
+---
+
+## ⚙️ How it Works  
+
+- Each morning at **7 a.m. (Cambridge winter time)** → `scrape.py` runs.  
+- As a result, `index.html` is generated.  
+- This folder is also the **source folder for web Docker**: `pe.margetaj.cz`.  
+
+---
+
+## ▶️ Run it Locally  
+
+1. Clone the repository.  
+2. Ensure the full Git folder is set as environment.  
+3. Download requirements (`pip install -r requirements.txt`).  
+4. Run `scrape.py`.  

@@ -9,21 +9,34 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d0d0d;
+      color: #f5f5f5;
       margin: 0;
       padding: 0;
+      opacity: 0;
+      animation: fadeInBody 1s ease forwards;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    @keyframes fadeInBody {
+      to { opacity: 1; }
     }
 
     .layout {
       display: flex;
-      min-height: 100vh;
+      flex: 1;
     }
 
     .content {
       flex: 4;
       padding: 2rem;
+      transform: translateY(30px);
+      opacity: 0;
+      animation: slideUp 0.8s ease forwards;
+      animation-delay: 0.3s;
     }
 
     .sidebar {
@@ -34,73 +47,169 @@
       align-items: center;
       justify-content: center;
       border-left: 1px solid #333;
+      transform: translateX(30px);
+      opacity: 0;
+      animation: slideInSidebar 0.8s ease forwards;
+      animation-delay: 0.6s;
     }
 
     .sidebar img {
       max-width: 100%;
       max-height: 100%;
-      border-radius: 8px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      transform: scale(0.8);
+      opacity: 0;
+      animation: popIn 0.6s ease forwards;
+      animation-delay: 1s;
+    }
+
+    @keyframes slideUp {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideInSidebar {
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes popIn {
+      to { transform: scale(1); opacity: 1; }
     }
 
     h1 {
-      color: #ffa500;
-      border-bottom: 2px solid #ffa500;
-      padding-bottom: 0.2em;
+      color: #ff9800;
+      border-bottom: 3px solid #ff9800;
+      padding-bottom: 0.4em;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeDown 0.8s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes fadeDown {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #ffa733;
+      font-size: 1.4rem;
     }
 
     .restaurant {
       margin-bottom: 2em;
-      padding: 1em;
+      padding: 1.5em;
       border: 1px solid #333;
       background-color: #1a1a1a;
-      border-radius: 8px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInCard 0.6s ease forwards;
     }
 
-    ul {
-      list-style-type: "🍽 ";
-      padding-left: 1.5em;
+    .restaurant:nth-of-type(1) { animation-delay: 0.7s; }
+    .restaurant:nth-of-type(2) { animation-delay: 0.9s; }
+    .restaurant:nth-of-type(3) { animation-delay: 1.1s; }
+
+    @keyframes fadeInCard {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .restaurant:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.6);
     }
 
     table {
       width: 100%;
-      font-family: sans-serif;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    tr {
+      border-bottom: 1px solid #333;
+    }
+
+    tr:last-child {
+      border-bottom: none;
     }
 
     td {
-      padding: 0.3em 0;
+      padding: 0.6em 0.3em;
+      font-size: 0.95rem;
+    }
+
+    td:first-child {
+      color: #ddd;
     }
 
     td:last-child {
       text-align: right;
+      color: #ffcc66;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background-color: #1a1a1a;
+      border-top: 1px solid #333;
+      opacity: 0;
+      animation: fadeInFooter 1s ease forwards;
+      animation-delay: 1.5s;
+    }
+
+    .footer a {
+      color: #ff9800;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeInFooter {
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+      .sidebar {
+        border-left: none;
+        border-top: 1px solid #333;
+      }
     }
   </style>
 </head>
 <body>
   <div class="layout">
     <div class="content">
- <h1>Menu for {{ date }}</h1>
-
-    {% for restaurant in menus %}
-        <div class="restaurant">
-            <h2>{{ restaurant.name }}</h2>
-            <table style="width: 100%; font-family: sans-serif;">
-                
-                {% for item in restaurant['items'] %}
-                    <tr>
-                        <td>{{ item['name'] }}</td>
-                        <td style="text-align: right;">{{ item['price'] }}</td>
-                    </tr>
-                {% endfor %}
-                
+      <h1>Menu for {{ date }}</h1>
+      {% for restaurant in menus %}
+      <div class="restaurant">
+        <h2>{{ restaurant.name }}</h2>
+            <table>  
+              {% for item in restaurant['items'] %}
+              <tr><td>{{ item['name'] }}</td><td>{{ item['price'] }}</td></tr>
+              {% endfor %}
             </table>
         </div>
-            
-    {% endfor %}
+      {% endfor %}
     </div>
 
     <div class="sidebar">
-      <img src="./ThisImage.png">
+      <img src="./{{restaurants_file}}" alt="Sidebar image">
     </div>
+  </div>
+  <div class="footer">
+    For requests and feedback contact <a href="mailto:support@margetaj.cz">support@margetaj.cz</a>
   </div>
 </body>
 </html>

@@ -4,11 +4,14 @@ from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 import os
 import re
-import html
+import html as html_lib
 import codecs
 import shutil
-
-
+import importlib.util
+import sys
+import fitz  # PyMuPDF
+from io import BytesIO
+import pickle
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 print('current dir is:', os.getcwd())
@@ -21,28 +24,13 @@ OUTPUT_DIR = 'output'
 TEMPLATE_FILE = 'template.html'
 
 # Restaurant table, name of restarant, URL to menu, and parser function name
-RESTAURANTS = [
-    {
-        "name": "Trifot",
-        "url": "https://www.dnesniobed.cz/jidelnicek/frame/frame.php/3004_1",
-        "parser": "parse_menu_alfa"
-    },
-    {
-        "name": "Aspira",
-        "url": "https://www.aspiracafe.cz/tydenni-menu/",
-        "parser": "parse_menu_beta"
-    },
-    {
-        "name": "Olive",
-        "url": "https://www.olivefood.cz/coral",
-        "parser": "parse_menu_gama"
-    },
-    {
-        "name": "Pub",
-        "url": "https://www.thepub.cz/praha-13",
-        "parser": "parse_menu_theta"
-    }
-]
+def load_restaurants(config_filename):
+    config_path = os.path.join(script_dir, config_filename)
+    spec = importlib.util.spec_from_file_location("restaurant_config", config_path)
+    config = importlib.util.module_from_spec(spec)
+    sys.modules["restaurant_config"] = config
+    spec.loader.exec_module(config)
+    return config.RESTAURANTS
 
 # Function to parse Trifot menu
 def parse_menu_alfa(html):
@@ -75,6 +63,114 @@ def parse_menu_alfa(html):
             print(f"⚠️ Could not parse item: {item}")
     
     return output
+
+
+
+def parse_menu_6(html):
+    start_index = html.find('<font face="Trebuchet MS">Polévky</font>')
+    end_index = html.find('<td align="left" height="25"><b><i><font face="Trebuchet MS">Saláty:</font></i></b></td>')
+    text = html[start_index:end_index]         
+    # Pattern for single-line items (e.g. soups)
+    single_pattern = re.compile(
+        r'<font face="Trebuchet MS">(\d+\.[^<]+)</font>.*?<b><i>(\d+\.-)</i></b>',
+        re.DOTALL
+    )
+
+    # Pattern for two-line items (main dishes)
+    multi_pattern = re.compile(
+        r'<font face="Trebuchet MS">(\d+\.[^<]+)</font>.*?</td>.*?'
+        r'<font face="Trebuchet MS">([^<]+)</font>.*?<font face="Trebuchet MS">(\d+\.-)</font>',
+        re.DOTALL
+    )
+
+    # Find single-line items
+    single_items = single_pattern.findall(text)
+    start_index = html.find('<font face="Trebuchet MS">Menu</font>')
+    end_index = html.find('<td align="left" height="25"><b><i><font face="Trebuchet MS">Saláty:</font></i></b></td>')
+    text = html[start_index:end_index]
+    # Find multi-line items
+    multi_items = multi_pattern.findall(text)
+ 
+    
+    cleaned_items = []
+    for name, price in single_items:
+        price = price[:-2] + " Kč"  # Remove last 2 chars and add Kč
+        cleaned_items.append({
+            'name': name[3:],
+            'price': price
+        })    
+    for items in multi_items:
+        combined_name = items[0].strip()[3:] + " " + items[1].strip()
+        price = items[2].strip()[:-2] + " Kč"  # Remove last 2 chars and add Kč
+        cleaned_items.append({
+            'name': combined_name,
+            'price': price
+        })  
+    return cleaned_items
+
+
+def parse_menu_8(html):
+    start_index = html.find('<h3>Polévky</h3>')
+    end_index = html.find('<h3>Stálá nabídka</h3>')
+    text = html[start_index:end_index]         
+    # Pattern for single-line items (e.g. soups)
+    pattern = re.compile(
+        r'<span class="field-content">([^<]+)</span>.*?'
+        r'<span class="field-content">([\d, a-zA-Z]+)</span>.*?'
+        r'<span class="field-content">([\d\.]+ Kč)</span>',
+        re.DOTALL
+    )
+    matches = pattern.findall(text)
+ 
+    cleaned_items = []
+    for items in matches:
+        cleaned_items.append({
+            'name': items[0].strip(),
+            'price': items[2].strip()
+        })    
+    return cleaned_items
+
+# Function to parse AirClub menu
+def parse_menu_7(html):
+    html = html_lib.unescape(html) 
+    today = datetime.today().strftime('%A')  # e.g. "Monday"
+    if today == 'Monday':
+        start_index = html.find('<span style="color: #000080;">Pondělí ')
+        end_index = html.find('<span style="color: #000080;">Úterý ')
+    elif today == 'Tuesday':
+        start_index = html.find('<span style="color: #000080;">Úterý ')
+        end_index = html.find('<span style="color: #000080;">Středa')
+    elif today == 'Wednesday':
+        start_index = html.find('<span style="color: #000080;">Středa')
+        end_index = html.find('<span style="color: #000080;">Čtvrtek ')
+    elif today == 'Thursday':
+        start_index = html.find('<span style="color: #000080;">Čtvrtek ')
+        end_index = html.find('<span style="color: #000080;">Pátek ')
+    elif today == 'Friday':
+        start_index = html.find('<span style="color: #000080;">Pátek ')
+        end_index = html.find('<span style="color: #ffffff; background-color: #000080;"><strong>Menu</strong></span>')
+    
+    text = html[start_index:end_index]   
+    pattern = re.compile(
+        r'<strong>(?:<span>)?(\d+.*?)(?:</span>)?</strong>',
+        re.DOTALL
+    )
+    
+    matches = pattern.findall(text)
+    cleaned_items = []
+    for line in matches:
+        name = line[3:-5]
+        name = html_lib.unescape(name) 
+        name = re.sub(r'<[^>]+>', '', name)
+        name = name.strip()
+        price = line[-5:-2] + " Kč"  # Extract last 3 chars and add Kč
+        cleaned_items.append({
+            'name': name,
+            'price': price
+        }) 
+    return cleaned_items
+
+
 
 # Function to parse Aspira menu
 def parse_menu_beta(html):
@@ -174,6 +270,51 @@ def parse_menu_theta(html):
     
     return cleaned_items
 
+def parse_menu_9(html):
+    pdf_stream = download_pdf(html)
+    html = extract_text_from_pdf(pdf_stream)
+    today = datetime.today().strftime('%A')  # e.g. "Monday"
+    if today == 'Monday':
+        start_index = html.find('Pondělí: ')
+        end_index = html.find('Úterý: ')
+    elif today == 'Tuesday':
+        start_index = html.find('Úterý: ')
+        end_index = html.find('Středa: ')
+    elif today == 'Wednesday':
+        start_index = html.find('Středa: ')
+        end_index = html.find('Čtvrtek: ')
+    elif today == 'Thursday':
+        start_index = html.find('Čtvrtek: ')
+        end_index = html.find('Pátek: ')
+    elif today == 'Friday':
+        start_index = html.find('Pátek: ')
+        end_index = html.find('nTabulka alergenu')
+    text = html[start_index:end_index]
+    pattern = re.compile(r'(\d+[,\.]?\d*\w+ [^(\n]+)')
+    matches = pattern.findall(text)
+
+    cleaned_items = []
+    for item in matches:
+        cleaned_items.append({
+            'name': item.strip(),
+            'price': "dont know, dont care"
+        })
+    
+    return cleaned_items
+
+def download_pdf(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    return BytesIO(response.content)
+
+def extract_text_from_pdf(pdf_stream):
+    doc = fitz.open(stream=pdf_stream, filetype="pdf")
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    doc.close()
+
+    return text
 
 def fix_encoding(text):
     try:
@@ -189,7 +330,12 @@ def load_menu(restaurant):
         resp = requests.get(restaurant['url'], timeout=10)
         resp.raise_for_status()
         parser_func = globals()[restaurant["parser"]]
-        items = parser_func(resp.text)
+        if resp.url.lower()[-3:] == "pdf":
+            items = parser_func(resp.url)
+        else:
+            items = parser_func(resp.text)
+        
+        
         return {
             "name": restaurant["name"],
             "items": items
@@ -202,10 +348,14 @@ def load_menu(restaurant):
 
 
 # Function to render HTML using Jinja2   
-def render_html(menu_data):
+def render_html(menu_data, restaurants_file):
     env = Environment(loader=FileSystemLoader(script_dir))
     template = env.get_template(TEMPLATE_FILE)
     menus=menu_data
+    if restaurants_file == "restaurants_sona.py":
+        restaurants_file = 'ThisImage2.png'
+    else:
+        restaurants_file = 'ThisImage.png'
     for restaurant in menus:
         print(restaurant['name'])
         for item in restaurant['items']:
@@ -215,6 +365,7 @@ def render_html(menu_data):
     output = template.render(
         date=datetime.today().strftime("%A, %d.%m.%Y"),
         menus=menu_data
+        , restaurants_file=restaurants_file
     )
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -226,8 +377,16 @@ def render_html(menu_data):
 # Main function to load menus and render HTML
 def main():
     print("Loading menus...")
+    if len(sys.argv) < 2:
+        print("Usage: python scrape.py <restaurants_file.py>")
+        sys.exit(1)
+    restaurants_file = sys.argv[1]
+    RESTAURANTS = load_restaurants(restaurants_file)
     menus = [load_menu(r) for r in RESTAURANTS]
-    render_html(menus)
+    # Save menus to a file for later use
+    with open("menus.pkl", "wb") as f:
+        pickle.dump(menus, f)
+    render_html(menus, restaurants_file)
     print("✓ Menu summary generated: output/index.html")
 
 if __name__ == "__main__":
