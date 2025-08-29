@@ -78,7 +78,7 @@ def parse_menu_6(html):
 
     # Pattern for two-line items (main dishes)
     multi_pattern = re.compile(
-        r'<font face="Trebuchet MS">(\d+\.[^<]+)</font>.*?</td>.*?'
+        r'<font face="Trebuchet MS">(\d+[^<]+)</font>.*?</td>.*?'
         r'<font face="Trebuchet MS">([^<]+)</font>.*?<font face="Trebuchet MS">(\d+\.-)</font>',
         re.DOTALL
     )
@@ -86,7 +86,7 @@ def parse_menu_6(html):
     # Find single-line items
     single_items = single_pattern.findall(text)
     start_index = html.find('<font face="Trebuchet MS">Menu</font>')
-    end_index = html.find('<td align="left" height="25"><b><i><font face="Trebuchet MS">Saláty:</font></i></b></td>')
+    end_index = html.find('<i><font face="Trebuchet MS">Změna jídelního lístku vyhrazena.</font></i></b>')
     text = html[start_index:end_index]
     # Find multi-line items
     multi_items = multi_pattern.findall(text)
@@ -99,8 +99,12 @@ def parse_menu_6(html):
             'name': name[3:],
             'price': price
         })    
-    for items in multi_items:
-        combined_name = items[0].strip()[3:] + " " + items[1].strip()
+    for items in multi_items[:-1]:
+        if items[0][3] == ' ':
+            lineStart = 3
+        else:
+            lineStart = 2   
+        combined_name = items[0].strip()[lineStart:] + " " + items[1].strip()
         price = items[2].strip()[:-2] + " Kč"  # Remove last 2 chars and add Kč
         cleaned_items.append({
             'name': combined_name,
@@ -159,7 +163,11 @@ def parse_menu_7(html):
     matches = pattern.findall(text)
     cleaned_items = []
     for line in matches:
-        name = line[3:-5]
+        if line[3] == ' ':
+            lineStart = 3
+        else:
+            lineStart = 2
+        name = line[lineStart:-5]
         name = html_lib.unescape(name) 
         name = re.sub(r'<[^>]+>', '', name)
         name = name.strip()
@@ -297,7 +305,7 @@ def parse_menu_9(html):
     for item in matches:
         cleaned_items.append({
             'name': item.strip(),
-            'price': "dont know, dont care"
+            'price': "dont know"
         })
     
     return cleaned_items
