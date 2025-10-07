@@ -156,13 +156,14 @@ def parse_menu_7(html):
     
     text = html[start_index:end_index]   
     pattern = re.compile(
-        r'<strong>(?:<span>)?(\d+.*?)(?:</span>)?</strong>',
+        r'<strong>(:?<.*?>)*(\d+.*?)(:?</span>)+</strong>',
         re.DOTALL
     )
     
     matches = pattern.findall(text)
     cleaned_items = []
     for line in matches:
+        line = line[1]
         if line[3] == ' ':
             lineStart = 3
         else:
